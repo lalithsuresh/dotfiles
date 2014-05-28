@@ -8,3 +8,7 @@ remove mod5 = Mode_switch
 add control = Menu
 add control = Super_R
 keycode 135 = Control_R
+clear lock
+keycode 66 = Control_L
+add control = Control_L
+add mod4 = Print

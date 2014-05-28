@@ -49,7 +49,7 @@ bindkey '5C' forward-word
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/lalith/programming/test/mvn/clutserj/target/lib
 export CLASSPATH=$CLASSPATH:/home/lalith/programming/BIT-TOOL:/home/lalith/programming/BIT-TOOL/samples/:/home/lalith/.m2/repository/
 
-export JAVA_HOME=/home/lalith/Downloads/jre1.7.0_40
+export JAVA_HOME=/home/lalith/Downloads/jdk1.7.0_45/
 export AWT_TOOLKIT=MToolkit
 export HADOOP_COMMON_HOME=/home/lalith/programming/hadoop-common/hadoop-common-project/hadoop-common/target/hadoop-common-3.0.0-SNAPSHOT
 export HADOOP_HDFS_HOME=/home/lalith/programming/hadoop-common/hadoop-hdfs-project/hadoop-hdfs/target/hadoop-hdfs-3.0.0-SNAPSHOT
