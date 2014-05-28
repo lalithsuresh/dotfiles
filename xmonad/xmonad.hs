@@ -2,6 +2,7 @@
 -- Author: Vic Fryzel
 -- http://github.com/vicfryzel/xmonad-config
  
+
 import System.IO
 import System.Exit
 import XMonad
@@ -15,8 +16,10 @@ import XMonad.Util.Run(spawnPipe)
 import XMonad.Util.EZConfig(additionalKeys)
 import XMonad.Hooks.ManageHelpers (isFullscreen,doFullFloat)
 import XMonad.Layout.WindowNavigation
-import XMonad.Hooks.EwmhDesktops
 import XMonad.Hooks.SetWMName
+import XMonad.Hooks.ICCCMFocus
+import XMonad.Hooks.EwmhDesktops
+
 
 
 import qualified XMonad.StackSet as W
@@ -81,8 +84,8 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     , ((modMask,               xK_y     ), spawn "xscreensaver-command -lock")
 
     -- launch dmenu
-    , ((modMask,               xK_p     ), spawn "exe=`dmenu_run | ~/bin/dmenu` && eval \"exec $exe\"")
-    , ((modMask,               xK_b     ), spawn "google-chrome")
+    , ((modMask,               xK_p     ), spawn "exe=`dmenu_path | dmenu` && eval \"exec $exe\"")
+    , ((modMask,               xK_b     ), spawn "google-chrome --disk-cache-dir=/tmp/chrome")
  
     -- launch gmrun
     , ((modMask .|. shiftMask, xK_p     ), spawn "gmrun")
@@ -139,13 +142,17 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     , ((modMask              , xK_period), sendMessage (IncMasterN (-1)))
  
     -- toggle the status bar gap
-    -- TODO, update this binding with avoidStruts , ((modMask              , xK_b     ),
+    -- TODO, update this binding with avoidStruts , 
+    , ((modMask              , xK_y     ), sendMessage ToggleStruts)
  
     -- Quit xmonad
     , ((modMask .|. shiftMask, xK_q     ), io (exitWith ExitSuccess))
  
     -- Restart xmonad
     , ((modMask              , xK_q     ), restart "xmonad" True)
+
+    -- Lock screen
+    , ((modMask .|. shiftMask          , xK_l     ), spawn "gnome-screensaver-command -l")
     ]
     ++
  
@@ -279,7 +286,7 @@ myFocusFollowsMouse = True
 -- per-workspace layout choices.
 --
 -- By default, do nothing.
-myStartupHook = return ()
+--myStartupHook = return ()
  
 ------------------------------------------------------------------------
 -- Now run xmonad with all the defaults we set up.
@@ -287,16 +294,15 @@ myStartupHook = return ()
 -- Run xmonad with the settings you specify. No need to modify this.
 --
 main = do
---	xmproc <- spawnPipe "/usr/bin/xmobar ~/.xmonad/xmobar"
+	xmproc <- spawnPipe "/usr/bin/xmobar ~/.xmonad/xmobar"
 	xmonad $ defaults {
---		logHook            = dynamicLogWithPP $ xmobarPP {
---                                ppOutput = hPutStrLn xmproc
---                                , ppTitle = xmobarColor "#FFB6B0" "" . shorten 100
---                                , ppCurrent = xmobarColor "#CEFFAC" ""
---                                , ppSep = "   "
---                                }
-		 manageHook = manageDocks <+> myManageHook
-		, startupHook = ewmhDesktopsStartup >> setWMName "LG3D"
+		logHook            = dynamicLogWithPP $ xmobarPP {
+                                ppOutput = hPutStrLn xmproc
+                                , ppTitle = xmobarColor "#FFB6B0" "" . shorten 100
+                                , ppCurrent = xmobarColor "#CEFFAC" ""
+                                , ppSep = "   "
+                                }
+		, manageHook = manageDocks <+> myManageHook
 	}
 
 -- A structure containing your configuration settings, overriding
@@ -323,5 +329,7 @@ defaults = defaultConfig {
       -- hooks, layouts
         layoutHook         = smartBorders $ myLayout,
         manageHook         = myManageHook,
-        startupHook        = myStartupHook
+	      startupHook = setWMName "LG3D",
+        logHook = takeTopFocus,
+        handleEventHook = fullscreenEventHook
     }
